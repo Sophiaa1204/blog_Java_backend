@@ -1,6 +1,8 @@
 package com.sophia.blog_java_backend;
 
+import com.sophia.blog_java_backend.dao.DiscussPostMapper;
 import com.sophia.blog_java_backend.dao.UserMapper;
+import com.sophia.blog_java_backend.entity.DiscussPost;
 import com.sophia.blog_java_backend.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
+import java.util.List;
 
 @SpringBootTest
 @ContextConfiguration(classes = BlogJavaBackendApplication.class)
@@ -17,6 +20,9 @@ public class MapperTests {
     // inject userMapper
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private DiscussPostMapper discussPostMapper;
 
     @Test
     public void testSelectUser(){
@@ -54,6 +60,17 @@ public class MapperTests {
         System.out.println(rows);
 
         rows = userMapper.updatePassword(150,"hello");
+        System.out.println(rows);
+    }
+
+    @Test
+    public void testSelectPosts() {
+        List<DiscussPost> list = discussPostMapper.selectDiscussPosts(149,0,10);
+        for (DiscussPost post:list) {
+            System.out.println(post);
+        }
+
+        int rows = discussPostMapper.selectDiscussPostRows(149);
         System.out.println(rows);
     }
 }

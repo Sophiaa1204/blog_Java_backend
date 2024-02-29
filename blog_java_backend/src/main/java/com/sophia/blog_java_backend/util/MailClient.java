@@ -1,5 +1,6 @@
 package com.sophia.blog_java_backend.util;
 
+import jakarta.annotation.Resource;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
@@ -15,7 +16,7 @@ public class MailClient {
 
     private static final Logger logger = LoggerFactory.getLogger(MailClient.class);
 
-    @Autowired
+    @Autowired(required = false)
     private JavaMailSender mailSender;
 
     @Value("${spring.mail.username")

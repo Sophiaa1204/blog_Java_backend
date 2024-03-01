@@ -1,8 +1,11 @@
 package com.sophia.blog_java_backend.controller;
 
 import com.sophia.blog_java_backend.service.AlphaService;
+import com.sophia.blog_java_backend.util.CommunityUtil;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
@@ -134,6 +137,45 @@ public class AlphaController {
         return list;
     }
 
+    //cookie存在response的头部
+    @RequestMapping(path="/cookie/set", method = RequestMethod.GET)
+    @ResponseBody
+    public String setCookie(HttpServletResponse response) {
+        // 创捷Cookie(没有无参构造）
+        Cookie cookie = new Cookie("code", CommunityUtil.generateUUID());
+        // 设置Cookie生效的范围（不是每个路径都要发）
+        cookie.setPath("/community/alpha");
+        // 设置cookie的生存时间
+        cookie.setMaxAge(60*10);
+        //发送cookie
+        response.addCookie(cookie);
+
+        return "set cookie";
+    }
+
+    @RequestMapping(path="/cookie/get", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCookie(@CookieValue("code") String code){
+        System.out.println(code);
+        return "get cookie";
+    }
+
+    // session示例 (SpringMVC自动注入）
+    @RequestMapping(path="/session/set", method = RequestMethod.GET)
+    @ResponseBody
+    public String setSession(HttpSession session) {
+        session.setAttribute("id",1);
+        session.setAttribute("name", "session");
+        return "set session";
+    }
+
+    @RequestMapping(path="/session/get", method = RequestMethod.GET)
+    @ResponseBody
+    public String getSession(HttpSession session){
+        System.out.println(session.getAttribute("id"));
+        System.out.println(session.getAttribute("name"));
+        return "get session";
+    }
 
 }
 

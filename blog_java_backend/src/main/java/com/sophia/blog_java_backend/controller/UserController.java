@@ -101,7 +101,41 @@ public class UserController {
         } catch (IOException e) {
             logger.error("读取头像失败：" + e.getMessage());
         }
+    }
 
+    @RequestMapping(path = "/updatePassword", method = RequestMethod.POST)
+    public String updatePassword(Model model, String prevPassword, String newPassword, String confirmPassword) {
+        if (StringUtils.isBlank(prevPassword)) {
+            model.addAttribute("error", "旧密码不能为空！");
+            return "site/setting";
+        }
 
+        // make sure the previous password is correct
+        // get user
+        User user = hostHolder.getUser();
+        if (!user.getPassword().equals(CommunityUtil.md5(prevPassword+user.getSalt()))) {
+            model.addAttribute("error", "旧密码错误！");
+            return "site/setting";
+        }
+
+        if (StringUtils.isBlank(newPassword)) {
+            model.addAttribute("error", "新密码不能为空！");
+            return "site/setting";
+        }
+
+        // make sure the previous password is not equal to the new one
+        if (user.getPassword().equals(CommunityUtil.md5(newPassword+user.getSalt()))) {
+            model.addAttribute("error", "新旧密码相同！");
+            return "site/setting";
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("error", "确认密码错误！");
+            return "site/setting";
+        }
+
+        String newEncrypted = CommunityUtil.md5(newPassword+user.getSalt());
+        userService.updatePassword(user.getId(),newEncrypted);
+        return "redirect:/test";
     }
 }

@@ -1,5 +1,6 @@
 package com.sophia.blog_java_backend.controller;
 
+import com.sophia.blog_java_backend.annotation.LoginRequired;
 import com.sophia.blog_java_backend.entity.User;
 import com.sophia.blog_java_backend.service.UserService;
 import com.sophia.blog_java_backend.util.CommunityConstant;
@@ -42,11 +43,13 @@ public class UserController {
     @Autowired
     private HostHolder hostHolder;
 
+    @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getSettingPage() {
         return "site/setting";
     }
 
+    @LoginRequired
     @RequestMapping(path="/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model) {
         if (headerImage == null) {
@@ -103,6 +106,7 @@ public class UserController {
         }
     }
 
+    @LoginRequired
     @RequestMapping(path = "/updatePassword", method = RequestMethod.POST)
     public String updatePassword(Model model, String prevPassword, String newPassword, String confirmPassword) {
         if (StringUtils.isBlank(prevPassword)) {

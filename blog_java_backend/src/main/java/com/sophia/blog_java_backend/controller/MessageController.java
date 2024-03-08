@@ -92,9 +92,31 @@ public class MessageController {
         // 私信的目标
         model.addAttribute("target", getLetterTarget(conversationId));
 
+        // 设置为已读
+        List<Integer> ids = getLetterIds(letterList);
+        for (int i: ids) {
+            System.out.println(i);
+        }
+        if (!ids.isEmpty()) {
+            messageService.readMessage(ids);
+        }
+
         return "site/letter-detail";
     }
 
+    private List<Integer> getLetterIds(List<Message> letterList) {
+        List<Integer> ids = new ArrayList<>();
+
+        if(letterList != null) {
+            for(Message message: letterList) {
+                if (hostHolder.getUser().getId() == message.getToId() && message.getStatus() == 0) {
+                    ids.add(message.getId());
+                }
+            }
+        }
+
+        return ids;
+    }
     private User getLetterTarget(String conversationId) {
         String[] ids = conversationId.split("_");
         int id0 = Integer.parseInt(ids[0]);

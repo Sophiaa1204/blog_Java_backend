@@ -2,8 +2,11 @@ package com.sophia.blog_java_backend.service;
 
 import com.sophia.blog_java_backend.dao.MessageMapper;
 import com.sophia.blog_java_backend.entity.Message;
+import com.sophia.blog_java_backend.util.SensitiveFilter;
+import org.springframework.aot.generate.InMemoryGeneratedFiles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 
@@ -11,6 +14,9 @@ import java.util.List;
 public class MessageService {
     @Autowired
     private MessageMapper messageMapper;
+
+    @Autowired
+    private SensitiveFilter sensitiveFilter;
 
     public List<Message> findConversations(int userId, int offset, int limit) {
         return messageMapper.selectConversations(userId, offset, limit);
@@ -30,5 +36,15 @@ public class MessageService {
 
     public int findLetterUnreadCount(int userId, String conversationId) {
         return messageMapper.selectLetterUnreadCount(userId, conversationId);
+    }
+
+    public int addMessage(Message message) {
+        message.setContent(HtmlUtils.htmlEscape(message.getContent()));
+        message.setContent(sensitiveFilter.filter(message.getContent()));
+        return messageMapper.insertMessage(message);
+    }
+
+    public int readMessage(List<Integer> ids) {
+        return messageMapper.updateStatus(ids,1);
     }
 }

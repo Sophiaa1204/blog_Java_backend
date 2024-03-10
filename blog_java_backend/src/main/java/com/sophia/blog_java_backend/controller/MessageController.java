@@ -147,9 +147,15 @@ public class MessageController {
         }
         message.setContent(content);
         message.setCreateTime(new Date());
-        System.out.println(111111);
+//        System.out.println(111111);
         messageService.addMessage(message);
 
         return CommunityUtil.getJSONString(0);
+    }
+
+    // 人为处理，手动的重定向
+    @RequestMapping(path = "/error", method = RequestMethod.GET)
+    public String getErrorPage() {
+        return "/error/500";
     }
 }

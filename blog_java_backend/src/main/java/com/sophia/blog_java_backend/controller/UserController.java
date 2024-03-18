@@ -2,6 +2,7 @@ package com.sophia.blog_java_backend.controller;
 
 import com.sophia.blog_java_backend.annotation.LoginRequired;
 import com.sophia.blog_java_backend.entity.User;
+import com.sophia.blog_java_backend.service.LikeService;
 import com.sophia.blog_java_backend.service.UserService;
 import com.sophia.blog_java_backend.util.CommunityConstant;
 import com.sophia.blog_java_backend.util.CommunityUtil;
@@ -42,6 +43,9 @@ public class UserController {
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private LikeService likeService;
 
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
@@ -141,5 +145,22 @@ public class UserController {
         String newEncrypted = CommunityUtil.md5(newPassword+user.getSalt());
         userService.updatePassword(user.getId(),newEncrypted);
         return "redirect:/test";
+    }
+
+    // 个人主页
+    @RequestMapping(path = "/profile/{userId}", method = RequestMethod.GET)
+    public String getProfilePage(@PathVariable("userId") int userId, Model model) {
+        User user = userService.findUserById(userId);
+        if (user == null) {
+            throw new RuntimeException("该用户不存在！");
+        }
+
+        // 用户
+        model.addAttribute("user", user);
+        // 点赞数量
+        int likeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount", likeCount);
+
+        return "site/profile";
     }
 }

@@ -2,6 +2,7 @@ package com.sophia.blog_java_backend.controller;
 
 import com.sophia.blog_java_backend.annotation.LoginRequired;
 import com.sophia.blog_java_backend.entity.User;
+import com.sophia.blog_java_backend.service.FollowService;
 import com.sophia.blog_java_backend.service.LikeService;
 import com.sophia.blog_java_backend.service.UserService;
 import com.sophia.blog_java_backend.util.CommunityConstant;
@@ -27,7 +28,7 @@ import java.io.OutputStream;
 
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController implements CommunityConstant {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     @Value("${community.path.upload}")
     private String uploadPath;
@@ -46,6 +47,9 @@ public class UserController {
 
     @Autowired
     private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
@@ -160,6 +164,19 @@ public class UserController {
         // 点赞数量
         int likeCount = likeService.findUserLikeCount(userId);
         model.addAttribute("likeCount", likeCount);
+
+        // 查询关注数量
+        long followeeCount = followService.findFolloweeCount(userId, ENTITY_TYPE_USER);
+        model.addAttribute("followeeCount", followeeCount);
+        // 关注粉丝的数量
+        long followerCount = followService.findFollowerCount(ENTITY_TYPE_USER, userId);
+        model.addAttribute("followerCount", followerCount);
+        // 是否已关注
+        boolean hasFollowed = false;
+        if (hostHolder.getUser() != null) {
+            hasFollowed = followService.hasFollowed(hostHolder.getUser().getId(), ENTITY_TYPE_USER, userId);
+        }
+        model.addAttribute("hasFollowed", hasFollowed);
 
         return "site/profile";
     }

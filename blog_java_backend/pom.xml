@@ -96,6 +96,27 @@
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+		</dependency>
+
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.data</groupId>-->
+<!--			<artifactId>spring-data-elasticsearch</artifactId>-->
+<!--			<version>5.2.4</version>-->
+<!--		</dependency>-->
+
+
+		<!--   elasticsearch依赖     -->
+		<dependency>
+			<groupId>co.elastic.clients</groupId>
+			<artifactId>elasticsearch-java</artifactId>
+			<version>8.11.4</version>
+		</dependency>
+
+
+
 
 
 	</dependencies>

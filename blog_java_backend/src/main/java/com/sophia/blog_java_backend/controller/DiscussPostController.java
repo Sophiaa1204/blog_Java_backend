@@ -1,10 +1,8 @@
 package com.sophia.blog_java_backend.controller;
 
 import com.sophia.blog_java_backend.dao.DiscussPostMapper;
-import com.sophia.blog_java_backend.entity.Comment;
-import com.sophia.blog_java_backend.entity.DiscussPost;
-import com.sophia.blog_java_backend.entity.Page;
-import com.sophia.blog_java_backend.entity.User;
+import com.sophia.blog_java_backend.entity.*;
+import com.sophia.blog_java_backend.event.EventProducer;
 import com.sophia.blog_java_backend.service.CommentService;
 import com.sophia.blog_java_backend.service.DiscussPostService;
 import com.sophia.blog_java_backend.service.LikeService;
@@ -42,6 +40,9 @@ public class DiscussPostController implements CommunityConstant {
     @Autowired
     private LikeService likeService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseBody
     public String addDiscussPost(String title, String content) {
@@ -56,6 +57,14 @@ public class DiscussPostController implements CommunityConstant {
         post.setContent(content);
         post.setCreateTime(new Date());
         discussPostService.addDiscussPost(post);
+
+        // 触发发帖事件
+//        Event event = new Event()
+//                .setTopic(TOPIC_PUBLISH)
+//                .setUserId(user.getId())
+//                .setEntityType(ENTITY_TYPE_POST)
+//                .setEntityId(post.getId());
+//        eventProducer.fireEvent(event);
 
         // 报错的情况，将来统一处理
         return CommunityUtil.getJSONString(0,"发布成功！");

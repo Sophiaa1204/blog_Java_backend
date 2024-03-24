@@ -1,8 +1,11 @@
 package com.sophia.blog_java_backend.event;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.sophia.blog_java_backend.entity.DiscussPost;
 import com.sophia.blog_java_backend.entity.Event;
 import com.sophia.blog_java_backend.entity.Message;
+import com.sophia.blog_java_backend.service.DiscussPostService;
+import com.sophia.blog_java_backend.service.ElasticsearchService;
 import com.sophia.blog_java_backend.service.MessageService;
 import com.sophia.blog_java_backend.util.CommunityConstant;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -22,6 +25,12 @@ public class EventConsumer implements CommunityConstant {
 
     @Autowired
     private MessageService messageService;
+
+//    @Autowired
+//    private DiscussPostService discussPostService;
+//
+//    @Autowired
+//    private ElasticsearchService elasticsearchService;
 
     @KafkaListener(topics = {TOPIC_COMMENT, TOPIC_LIKE, TOPIC_FOLLOW})
     public void handleCommentMessage(ConsumerRecord record){
@@ -65,4 +74,20 @@ public class EventConsumer implements CommunityConstant {
         messageService.addMessage(message);
         System.out.println("You are here 7");
     }
+
+    // 消费发帖事件
+//    @KafkaListener(topics = {TOPIC_PUBLISH})
+//    public void handlePublishMessage(ConsumerRecord record) {
+//        if(record == null || record.value() == null) {
+//            logger.error("消息的内容为空！");
+//            return;
+//        }
+//        Event event = JSONObject.parseObject(record.value().toString(), Event.class);
+//        if (event == null) {
+//            logger.error("消息格式错误！");
+//            return;
+//        }
+//        DiscussPost post = discussPostService.findDiscussPostById(event.getEntityId());
+//        elasticsearhService.saveDiscussPost(post);
+//    }
 }
